@@ -278,6 +278,13 @@ deallocuvm(pde_t *pgdir, uint oldsz, uint newsz)
       kfree(v);
       *pte = 0;
     }
+    else if((*pte & PTE_P) == 0){
+      if(*pte & PTE_O){
+        begin_op();
+        bfree_page(1,getswappedblk(pgdir,*pte));
+        end_op();
+      }
+    }
   }
   return newsz;
 }
