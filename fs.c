@@ -115,7 +115,7 @@ balloc_page(uint dev)
         //cprintf("Yes\n");
         int cbi = bi;
         int bound = start + 8;
-        cprintf("%d %d\n",cbi,bound);
+        //cprintf("%d %d\n",cbi,bound);
         for(cbi = start;cbi < BPB && b + cbi < sb.size && cbi < bound; cbi++){
           m = 1 << (cbi % 8);
           bp->data[cbi/8] |= m;  // Mark block in use.
@@ -124,6 +124,7 @@ balloc_page(uint dev)
         }
         brelse(bp);
         //cprintf("Done ballocing page\n");
+        numallocblocks += 8;
         return start;
       }
     }
@@ -148,6 +149,7 @@ bfree(int dev, uint b)
   if((bp->data[bi/8] & m) == 0)
     panic("freeing free block");
   bp->data[bi/8] &= ~m;
+  numallocblocks--;
   log_write(bp);
   brelse(bp);
 }
@@ -157,7 +159,7 @@ bfree(int dev, uint b)
 void
 bfree_page(int dev, uint b)
 {
-  cprintf("In bfree_page\n");
+  //cprintf("In bfree_page\n");
   for(int i = b; i < b + 8; i++){
     bfree(dev,i);
   }

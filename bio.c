@@ -99,8 +99,8 @@ void
 write_page_to_disk(uint dev, char *pg, uint blk)
 { 
 
-  cprintf("In write page to disk\n");
-  cprintf("pg = %x and block = %d",pg,blk);
+  // cprintf("In write page to disk\n");
+  // cprintf("pg = %x and block = %d",pg,blk);
   int i;
   struct buf *mybuf;
   for(i = 0; i < 8 ;i++){

@@ -48,7 +48,7 @@ swap_page_from_pte(pte_t *pte)
 	//cprintf("Attempting to write to disk\n");
 	write_page_to_disk(1,P2V(temp),start);
 	// end_op();
-	cprintf("Written to disk\n");
+	//cprintf("Written to disk\n");
 	// uint ppn = *pte & 0xfffff000;
 	uint flags = *pte & 0xfff;
 	flags = flags & ~PTE_P; //Set present flag to 0

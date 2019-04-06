@@ -348,7 +348,6 @@ clearaccessbit(pde_t *pgdir)
 int
 getswappedblk(pde_t *pgdir, uint va)
 {
-  // pte_t *pte = walkpgdir(pgdir,(char*)va,0);
   int wasswapped = va & PTE_O; 
   if(wasswapped != 0){
     int temp = va >> 12;
@@ -379,6 +378,8 @@ copyuvm(pde_t *pgdir, uint sz)
   pte_t *pte;
   uint pa, i, flags;
   char *mem;
+  int check = 0;
+  int blkid = -1;
 
   if((d = setupkvm()) == 0)
     return 0;
@@ -386,16 +387,38 @@ copyuvm(pde_t *pgdir, uint sz)
   for(i = 0; i < sz; i += PGSIZE){
     if((pte = walkpgdir(pgdir, (void *) i, 0)) == 0)
       panic("copyuvm: pte should exist");
-    if(!(*pte & PTE_P))
-      panic("copyuvm: page not present");
+    if(!(*pte & PTE_P)){
+      if(*pte & PTE_O){
+        check = 1;
+        blkid = getswappedblk(pgdir,*pte);
+        //cprintf("%s\n","OOF" );
+      }
+      else  panic("copyuvm: page not present");
+    }
     pa = PTE_ADDR(*pte);
     flags = PTE_FLAGS(*pte);
-    if((mem = kalloc()) == 0)
+    if((mem = kalloc()) == 0){
+      begin_op();
+      swap_page(pgdir);
+      end_op();
+      mem = kalloc();
+      //goto bad;
+    }
+      
+    if(check == 1){
+      read_page_from_disk(1,mem,blkid);
+    }
+    else{
+       memmove(mem, (char*)P2V(pa), PGSIZE);
+    }
+   
+    if(mappages(d, (void*)i, PGSIZE, V2P(mem), flags) < 0){
+      // begin_op();
+      // swap_page(pgdir);
+      // end_op();
       goto bad;
-
-    memmove(mem, (char*)P2V(pa), PGSIZE);
-    if(mappages(d, (void*)i, PGSIZE, V2P(mem), flags) < 0)
-      goto bad;
+    }
+      
   }
   return d;
 

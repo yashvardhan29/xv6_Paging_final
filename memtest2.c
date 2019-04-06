@@ -62,8 +62,10 @@ mem(void)
 		m1 = start;
 	
 		while (count != total_count) {
-			if (((int*)m1)[2] != count)
+			if (((int*)m1)[2] != count){
+				printf(1,":(((((\n");
 				goto failed;
+			}
 			m1 = *(char**)m1;
 			count++;
 		}
