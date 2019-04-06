@@ -85,36 +85,54 @@ balloc(uint dev)
 uint
 balloc_page(uint dev)
 { 
-  // cprintf("In balloc_page\n");
+  //cprintf("In balloc_page\n");
   int b, bi, m;
-  // int start = -1;
+  int start = -1;
   struct buf *bp;
 
   bp = 0;
-  // int count = 0; //Change
+  int count = 0; //Change
   for(b = 0; b < sb.size; b += BPB){
     bp = bread(dev, BBLOCK(b, sb));
-    // int temp = 0;
-    for(bi = 0; bi < BPB && b + bi + 8 < sb.size; bi++){
-      m = 0xff;
+    int temp = 0;
+    for(bi = 0; bi < BPB && b + bi < sb.size; bi++){
+      m = 1 << (bi % 8);
+      temp++;
       if((bp->data[bi/8] & m) == 0){  // Is block free?
-        bp->data[bi/8] |= m;  // Mark block in use.
-        log_write(bp);
-        brelse(bp);
-        int x;
-        for(x = 0; x < 8; ++x){
-         bzero(dev, b + bi + x);
+        if(count == 0){
+          start  = bi;
         }
-        return b + bi;
+        count++;
+
+      }
+      else{
+        count = 0;
+        start = -1;
+      }
+
+
+      if(count == 8){
+        //cprintf("Yes\n");
+        int cbi = bi;
+        int bound = start + 8;
+        cprintf("%d %d\n",cbi,bound);
+        for(cbi = start;cbi < BPB && b + cbi < sb.size && cbi < bound; cbi++){
+          m = 1 << (cbi % 8);
+          bp->data[cbi/8] |= m;  // Mark block in use.
+          log_write(bp);
+          bzero(dev, b + cbi);
+        }
+        brelse(bp);
+        //cprintf("Done ballocing page\n");
+        return start;
       }
     }
     brelse(bp);
   }
   panic("balloc: out of blocks");
 
-return -1;
+  return -1;
 }
-
 
 // Free a disk block.
 static void

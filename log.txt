@@ -1,4 +1,4 @@
-gcc -fno-pic -static -fno-builtin -fno-strict-aliasing -O2 -Wall -MD -ggdb -m32 -Werror -fno-omit-frame-pointer -fno-stack-protector   -c -o vm.o vm.c
+gcc -fno-pic -static -fno-builtin -fno-strict-aliasing -O2 -Wall -MD -ggdb -m32 -Werror -fno-omit-frame-pointer -fno-stack-protector   -c -o fs.o fs.c
 ld -m    elf_i386 -T kernel.ld -o kernel entry.o bio.o console.o exec.o file.o fs.o ide.o ioapic.o kalloc.o kbd.o lapic.o log.o main.o mp.o picirq.o pipe.o proc.o sleeplock.o spinlock.o string.o swtch.o syscall.o sysfile.o sysproc.o trapasm.o trap.o paging.o uart.o vectors.o vm.o  -b binary initcode entryother
 objdump -S kernel > kernel.asm
 objdump -t kernel | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$/d' > kernel.sym
@@ -11,77 +11,99 @@ cpu1: starting 1
 cpu0: starting 0
 sb: size 128000 nblocks 127910 ninodes 200 nlog 30 logstart 2 inodestart 32 bmap start 58
 init: starting sh
-$ memtest1
+$ memtr est1
 MEMTEST1 IS COMMENCING
 mem test
 value stored = 597 
 value stored = 598 
 value stored = 599 
+770 771
 In write page to disk
-pg = 803b5000 and block = 768Written to disk
+pg = 803b5000 and block = 763Written to disk
 value stored = 600 
 value stored = 601 
+778 779
 In write page to disk
-pg = 803b6000 and block = 776Written to disk
+pg = 803b6000 and block = 771Written to disk
+786 787
 In write page to disk
-pg = 803b7000 and block = 784Written to disk
+pg = 803b7000 and block = 779Written to disk
 value stored = 602 
+794 795
 In write page to disk
-pg = 803b7000 and block = 792Written to disk
+pg = 803b7000 and block = 787Written to disk
+802 803
 In write page to disk
-pg = 803b7000 and block = 800Written to disk
+pg = 803b7000 and block = 795Written to disk
 value stored = 603 
+810 811
 In write page to disk
-pg = 803b7000 and block = 808Written to disk
+pg = 803b7000 and block = 803Written to disk
+818 819
 In write page to disk
-pg = 803b7000 and block = 816Written to disk
+pg = 803b7000 and block = 811Written to disk
 In bfree_page
+802 803
 In write page to disk
-pg = 803b7000 and block = 800Written to disk
+pg = 803b7000 and block = 795Written to disk
 In bfree_page
 value stored = 604 
+794 795
 In write page to disk
-pg = 803b7000 and block = 792Written to disk
+pg = 803b7000 and block = 787Written to disk
+826 827
 In write page to disk
-pg = 803b7000 and block = 824Written to disk
+pg = 803b7000 and block = 819Written to disk
 In bfree_page
 value stored = 605 
+818 819
 In write page to disk
-pg = 803b7000 and block = 816Written to disk
+pg = 803b7000 and block = 811Written to disk
+834 835
 In write page to disk
-pg = 803b7000 and block = 832Written to disk
+pg = 803b7000 and block = 827Written to disk
 In bfree_page
 value stored = 606 
+826 827
 In write page to disk
-pg = 803b7000 and block = 824Written to disk
+pg = 803b7000 and block = 819Written to disk
+842 843
 In write page to disk
-pg = 803b7000 and block = 840Written to disk
+pg = 803b7000 and block = 835Written to disk
 In bfree_page
 value stored = 607 
+834 835
 In write page to disk
-pg = 803b7000 and block = 832Written to disk
+pg = 803b7000 and block = 827Written to disk
 In bfree_page
 value stored = 608 
+842 843
 In write page to disk
-pg = 803b7000 and block = 840Written to disk
+pg = 803b7000 and block = 835Written to disk
 In bfree_page
+810 811
 In write page to disk
-pg = 803b7000 and block = 808Written to disk
+pg = 803b7000 and block = 803Written to disk
 In bfree_page
+794 795
 In write page to disk
-pg = 803b7000 and block = 792Written to disk
+pg = 803b7000 and block = 787Written to disk
 In bfree_page
+802 803
 In write page to disk
-pg = 803b7000 and block = 800Written to disk
+pg = 803b7000 and block = 795Written to disk
 In bfree_page
+818 819
 In write page to disk
-pg = 803b7000 and block = 816Written to disk
+pg = 803b7000 and block = 811Written to disk
 In bfree_page
+826 827
 In write page to disk
-pg = 803b7000 and block = 824Written to disk
+pg = 803b7000 and block = 819Written to disk
 In bfree_page
+834 835
 In write page to disk
-pg = 803b7000 and block = 832Written to disk
+pg = 803b7000 and block = 827Written to disk
 In bfree_page
 mem ok 0
 $ 
