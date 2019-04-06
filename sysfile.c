@@ -16,8 +16,31 @@
 #include "file.h"
 #include "fcntl.h"
 #include "paging.h"
+#include "memlayout.h"
 
 extern int numallocblocks;
+
+// static pte_t *
+// walkpgdir(pde_t *pgdir, const void *va, int alloc)
+// {
+//   pde_t *pde;
+//   pte_t *pgtab;
+
+//   pde = &pgdir[PDX(va)];
+//   if(*pde & PTE_P){
+//     pgtab = (pte_t*)P2V(PTE_ADDR(*pde));
+//   } else {
+//     if(!alloc || (pgtab = (pte_t*)kalloc()) == 0)
+//       return 0;
+//     // Make sure all those PTE_P bits are zero.
+//     memset(pgtab, 0, PGSIZE);
+//     // The permissions here are overly generous, but they can
+//     // be further restricted by the permissions in the page table
+//     // entries, if necessary.
+//     *pde = V2P(pgtab) | PTE_P | PTE_W | PTE_U;
+//   }
+//   return &pgtab[PTX(va)];
+// }
 
 // Fetch the nth word-sized system call argument as a file descriptor
 // and return both the descriptor and the corresponding struct file.
@@ -460,10 +483,16 @@ sys_bstat(void)
 int
 sys_swap(void)
 {
-  uint addr;
 
-  if(argint(0, (int*)&addr) < 0)
+  uint addr;
+    
+  if(argint(0, (int*)&addr) < 0){
     return -1;
+  }
+  // pte_t *pte = walkpgdir(myproc()->pgdir,(char *) addr,0);
+  // begin_op();
+  // swap_page_from_pte(pte);
+  // end_op();
   // swap addr
   return 0;
 }

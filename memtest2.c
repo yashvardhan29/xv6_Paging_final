@@ -51,16 +51,16 @@ mem(void)
 		m1 = *(char**)m1;
 		count++;
 	}
-
+	printf(1,"%x\n",start);
 	if (swap(start) != 0)
 		printf(1, "failed to swap %p\n", start);
-
+	printf(1,"Swap done, initiating fork\n" );
 	pid = fork();
-
+	printf(1, "Fork done\n");
 	if (pid == 0){
 		count = 0;
 		m1 = start;
-	
+		printf(1,"In child\n");
 		while (count != total_count) {
 			if (((int*)m1)[2] != count){
 				printf(1,":(((((\n");
@@ -68,6 +68,7 @@ mem(void)
 			}
 			m1 = *(char**)m1;
 			count++;
+			//printf(1,"%d\n",count );
 		}
 		exit();
 	}

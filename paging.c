@@ -42,11 +42,14 @@ swap_page_from_pte(pte_t *pte)
 {	
 	// begin_op();
 	//cprintf("Attempting to swap \n");
+	if((*pte & PTE_P) == 0) return;
 	uint start = balloc_page(1);
 	//cprintf("In swap function after ballocing\n");
 	char *temp = (char *) PTE_ADDR(*pte);
 	//cprintf("Attempting to write to disk\n");
+	
 	write_page_to_disk(1,P2V(temp),start);
+	
 	// end_op();
 	//cprintf("Written to disk\n");
 	// uint ppn = *pte & 0xfffff000;
