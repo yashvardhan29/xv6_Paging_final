@@ -116,8 +116,12 @@ panic(char *s)
   cprintf(s);
   cprintf("\n");
   getcallerpcs(&s, pcs);
-  for(i=0; i<10; i++)
+  int i = 0;
+  while(i<10){
     cprintf(" %p", pcs[i]);
+    i+=1;
+  }
+    
   panicked = 1; // freeze other CPU
   for(;;)
     ;
@@ -279,9 +283,10 @@ consolewrite(struct inode *ip, char *buf, int n)
   acquire(&cons.lock);
   for(i = 0; i < n; i++)
     consputc(buf[i] & 0xff);
-  release(&cons.lock);
+  
   ilock(ip);
-
+  release(&cons.lock);
+  
   return n;
 }
 
